@@ -1,7 +1,7 @@
 /* ==UserStyle==
 @name           Feishin Layout Tweaks
 @namespace      github.com/924e50c0/FeishinUserCSS
-@version        0.0.2
+@version        0.1.1
 @description    UserCSS for Feishin.
 @author         924e50c0
 
@@ -31,9 +31,11 @@
 @var  select      compactJustify      "  └ Justify" {"Left":"start", "Center":"center", "Right":"end", "Space around":"space-around", "Space between*":"space-between", "Space evenly":"space-evenly"}
 @var  select    playerbarTitle        " ↳ TITLE" {"-------":"null", "the image is always removed when the 'compact' rule is applied.":"null"}
 @var  checkbox  playerbarImage        "  ├ Player bar image" 1
+@var  select    justifyTitle          "  ├ Justify" {"Left":"left", "Center":"center", "Right":"right"}
 @var  text      orderPBTitle          "  └ Order" 1
 @var  select    playerbarControls     " ↳ CONTROLS" {"-------":"null", "add padding between the controls & song info.":"null", "-------":"null", "e.g. 0 0 0 25px":"null"}
 @var  text      orderPBControls       "  ├ Order" 2
+@var  select    justifyControls       "  ├ Justify" {"Left":"left", "Center":"center", "Right":"right"}
 @var  text      paddingControls       "  ├ Padding" 0
 @var  checkbox  stopButton            "  ├ Stop" 1
 @var  checkbox  shuffleButton         "  ├ Shuffle" 1
@@ -46,6 +48,7 @@
 @var  checkbox  randomButton          "  └ Random" 1
 @var  select    playerbarButtons      " ↳ BUTTONS" {"-------":"null"}
 @var  text      orderPBButtons        "  ├ Order" 3
+@var  select    justifyButtons        "  ├ Justify" {"Left":"left", "Center":"center", "Right":"right"}
 @var  checkbox  autodjBtn             "  ├ AutoDJ" 1
 @var  checkbox  sleeptimerButton      "  ├ Sleep Timer" 1
 @var  checkbox  settingsButton        "  ├ Settings" 1
@@ -352,6 +355,9 @@
     .fs-playerbar-module-center-grid-item {
       order: orderPBControls;
       padding: paddingControls;
+      align-items: start if justifyControls==left;
+      align-items: center if justifyControls==center;
+      align-items: end if justifyControls==right;
       gap: unset if not seekerPosition==original;
       & .fs-center-controls-module-buttons-container:has(>button:nth-child(9)) {
         &>button:nth-child(1) {
@@ -490,6 +496,9 @@
 
         .fs-left-controls-module-metadata-stack {
           align-items: center;
+          justify-content: start if justifyTitle==left;
+          justify-content: center if justifyTitle==center;
+          justify-content: end if justifyTitle==right;
           flex-direction: row;
           height: 100%;
           .fs-left-controls-module-line-item {
@@ -530,6 +539,9 @@
         justify-content: center;
         & > div {
           padding: unset !important;
+          align-self: start if justifyButtons==left;
+          align-self: center if justifyButtons==center;
+          align-self: end if justifyButtons==right;
         }
 
         & > div > div:first-child {
