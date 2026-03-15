@@ -16,4 +16,5 @@ Initially made to emulate my musicbee setup.
 ![preview](/previews/preview.png)
 
 ## Changelog
-- 15/03/2026 / [v0.0.2](https://github.com/924e50c0/FeishinUserCSS/commit/3d2bfabe892951992e9ab647b06a52585aa9eade) - Added right sidebar album cover
+- 15/03/2025 / [v0.1.1](https://github.com/924e50c0/FeishinUserCSS/commit/c5b0d756baab61dc15ad2cd86cc4d6eee2caaecd) - Added justify options for player bar items
+- 15/03/2026 / [v0.1.0](https://github.com/924e50c0/FeishinUserCSS/commit/3d2bfabe892951992e9ab647b06a52585aa9eade) - Added right sidebar album cover
