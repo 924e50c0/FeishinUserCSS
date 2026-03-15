@@ -1,5 +1,5 @@
 /* ==UserStyle==
-@name           Feishin Tweaks
+@name           Feishin Layout Tweaks
 @namespace      github.com/924e50c0/FeishinUserCSS
 @version        0.0.1
 @description    UserCSS for Feishin.
@@ -11,6 +11,7 @@
 @var  checkbox  playlistImage         "Sidebar playlist image" 1
 @var  checkbox  statusBar             "Status bar" 1
 @var  number    contentRadius         "Main page border radius" [0, 0, 100, 1, 'px']
+@var  text      mainRadiusLayout      " └ Radius layout" contentRadius contentRadius 0 0
 @var  select    VISUALIZER            "⯈ ::VISUALIZER" {"-------":"null", "height is in px. width is a % max-width. the offset is a margin value.":"null", " '0 auto' centers, 'x x x x' allows for more precise positioning.":"null", "values are always declared clockwise: top, right, bottom & left margin.":"null", "e.g. '0 0 0 50px' is a 50px offset from the left.":"null", "declaring two values e.g. '10px 5px' sets top-bottom & left-right.":"null", "declaring three values e.g. '10px 5px 8px' sets top, left-right & bottom.":"null"}
 @var  checkbox  visualizerAlt         " └ Alt background color" 0
 @var  checkbox  horizontalVisualizer  " ↳ Horizontal" 0
@@ -20,7 +21,8 @@
 @var  select    PLAYERBAR             "⯈ ::PLAYER BAR" {"-------":"null", "if the seeker bar position differs from the original the playerbar changes height.":"null", "adjust the 'height' value as required.":"null", "the 'offset' value adds padding between the seeker bar & the rest off the player bar if required.":"null", "for the 'justify' rule to work you may need to use 'min-content' in the template.":"null"}
 @var  checkbox  topPlayerbar          " ├ Player bar on top" 0
 @var  checkbox  playerbarAlt          " ├ Alt background color" 1
-@var  checkbox  playerbarBorder       " ├ Border top" 1
+@var  text      playerbarBorderTop    " ├ Border top" 1px solid transparentify(#3e3e3e, .9)
+@var  text      playerbarBorderBottom " ├ Border bottom" none
 @var  text      playerbarHeight       " ├ Height" 90px
 @var  select    seekerPosition        " └ Seeker position" {"Original":"original", "Full width top":"topFW", "Full width top as divider":"topFWdiv", "Full width bottom":"bottomFW", "Full width bottom as divier":"bottomFWdiv"}
 @var  text      seekerOffset          "  └ Offset" 0px
@@ -52,7 +54,7 @@
 @var  checkbox  queueButton           "  ├ View queue" 1
 @var  checkbox  volumeButton          "  └ Volume" 1
 @var  checkbox  volumeSlider          "   └ Slider" 1
-@var  select    FILTERS               "⯈ ::FILTERS" {"-------":"null", "remove & order each filter individually.":"null", "the filters container can also be turned into a grid.":"null", "by default, it will display two columns of equal sizes.":"null", "tThe areas (fav, comp, art, genre, year, div1, div2, div3) may be modified.":"null"}
+@var  select    FILTERS               "⯈ ::FILTERS" {"-------":"null", "remove & order each filter individually.":"null", "the filters container can also be turned into a grid.":"null", "by default, it will display two columns of equal sizes.":"null", "the areas (fav, comp, art, genre, year, div1, div2, div3) may be modified.":"null"}
 @var  text      widthRoot             " ├ Width (breaks page if too wide)" 300px
 @var  text      paddingRoot           " ├ Padding" var(--mantine-spacing-md)
 @var  checkbox  displayGrid           " └ Grid" 0
@@ -81,6 +83,12 @@
 @var  number    orderDivider--2       "   └ Order" [5, 0, 10, 1]
 @var  checkbox  filterDivider--3      "  └ Divider 3" 1
 @var  number    orderDivider--3       "   └ Order" [7, 0, 10, 1]
+@var  select    SIDEBARCOVER          "⯈ ::SIDEBAR COVER" {"-------":"null", "click the 'extend' button in the player bar album cover for this to work.":"null", "(the album cover is disabled by default when using the compact player bar.)":"null", "the cover stays extended after a page refresh & a browser restart.":"null", "for the radius layout use the contentRadius property (defined in ::GENERAL.":"null"}
+@var  checkbox  rightsideCover        "Enable cover art in the right sidebar" 1
+@var  number    paddingCover          " ↳ Padding" [0, 0, 30, 1, 'px']
+@var  select    paddingCoverLayout    "  └ Layout" {"Stay on top":"top", "Center":"center"}
+@var  text      coverRadiusLayout     " ↳ Radius layout" 0 0 0 0
+@var  checkbox  collapseButton        " ↳ Remove collapse button" 0
 ==/UserStyle== */
 @-moz-document domain("feishin.vercel.app") {
   /* GENERAL */
@@ -104,13 +112,22 @@
     }
 
     .fs-main-content-module-main-content-body {
-      border-radius: contentRadius contentRadius 0 0;
+      border-radius: mainRadiusLayout;
       background: var(--theme-colors-background);
     }
   }
 
   #sidebar-queue {
     border: unset;
+  }
+
+
+  .fs-playerbar-module-right-grid-item {
+    height: fit-content;
+    justify-content: center;
+    & > div > div:last-child {
+      display: none;
+    }
   }
 
   #default-layout {
@@ -125,6 +142,10 @@
         grid-template-rows: calc(var(--visualizerHeight) + var(--playerbarHeight)) calc(100vh - calc(var(--visualizerHeight) + var(--playerbarHeight))) if horizontalVisualizer==1;
       }
     }
+  }
+
+  .fs-full-screen-player-module-container {
+    height: calc(100vh - var(--playerbarHeight)) !important;
   }
 }
 
@@ -174,7 +195,15 @@
   }
 
   .fs-playerbar-module-container {
-    border-top: none if playerbarBorder==0;
+    --playerbarBorderTop: playerbarBorderTop;
+    --playerbarBorderBottom: playerbarBorderBottom;
+  }
+
+  @css {
+    .fs-playerbar-module-container {
+      border-top: var(--playerbarBorderTop);
+      border-bottom: var(--playerbarBorderBottom);
+    }
   }
 
   if visualizerAlt==1 {
@@ -203,7 +232,7 @@
       padding-top: 0;
     }
 
-    :has(div.fs-sidebar-play-queue-module-visualizer-section) div#player-bar {
+    div#main-content:has(div.fs-sidebar-play-queue-module-visualizer-section) ~ div#player-bar {
       margin-top: visualizerHeight if horizontalVisualizer==1;
       z-index: 0;
     }
@@ -583,11 +612,6 @@
       .mantine-Stack-root .fs-virtual-multi-select-module-selected-option {
         --widthRoot: widthRoot;
         --paddingRoot: paddingRoot;
-        @css {
-          & {
-            max-width: calc(calc(var(--widthRoot) / 2) - calc(var(--mantine-spacing-md) * 1.55))
-          }
-        }
       }
     }
 
@@ -640,6 +664,58 @@
       & ~ .fs-divider-module-root {
         /* select & reset other dividers after the third */
         display: unset if filterDivider--3==0;
+      }
+    }
+  }
+}
+
+@-moz-document domain("feishin.vercel.app") {
+  /* RIGHT SIDEBAR */
+  if rightsideCover==1 {
+    div#default-layout:has(.fs-server-selector-module-button-container-no-bottom-padding) {
+      .fs-server-selector-module-button-container-no-bottom-padding {
+        /* the music library button has the bottom padding removed when the album cover art is extended. */
+        padding-bottom: var(--theme-spacing-md);
+      }
+
+      .fs-resize-handle-module-handle-right {
+        left: var(--sidebar-width);
+      }
+
+      .fs-sidebar-module-image-container {
+        --paddingCover: paddingCover;
+        z-index: 100;
+        position: absolute;
+        right: 0;
+        padding: 0 paddingCover if paddingCoverLayout==top;
+        padding: paddingCover if paddingCoverLayout==center;
+        width: var(--right-sidebar-width);
+        height: auto;
+        aspect-ratio: 1;
+        > .fs-sidebar-module-sidebar-image {
+          --paddingCover2: calc(var(--paddingCover) * 2);
+          width: calc(var(--right-sidebar-width) - var(--paddingCover2));
+          height: auto;
+          aspect-ratio: 1;
+          border-radius: coverRadiusLayout !important;
+        }
+      }
+
+      .fs-sidebar-module-image-container > button:nth-child(2) {
+        display: none if collapseButton==1;
+      }
+
+      .fs-left-sidebar-module-container {
+        /* remove relative positioning of the sidebar */
+        position: unset;
+      }
+
+      div.split-pane-pane:nth-child(1) > div:nth-child(1) {
+        --padding: paddingCover;
+        --offset: calc(var(--padding) * 2) if paddingCoverLayout==top;
+        --offset: calc(var(--padding) * 1) if paddingCoverLayout==center;
+        overflow: auto;
+        padding-top: calc(var(--right-sidebar-width) - var(--offset));
       }
     }
   }
