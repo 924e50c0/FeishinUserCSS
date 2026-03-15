@@ -1,0 +1,646 @@
+/* ==UserStyle==
+@name           Feishin Tweaks
+@namespace      github.com/924e50c0/FeishinUserCSS
+@version        0.0.1
+@description    UserCSS for Feishin.
+@author         924e50c0
+
+@preprocessor   stylus
+
+@var  select    GENERAL               "⯈ ::GENERAL" {"click for more info.":"null", "Categories (eg. ::GENERAL) may have info displayed in the blank '-------' select menu.":"null"}
+@var  checkbox  playlistImage         "Sidebar playlist image" 1
+@var  checkbox  statusBar             "Status bar" 1
+@var  number    contentRadius         "Main page border radius" [0, 0, 100, 1, 'px']
+@var  select    VISUALIZER            "⯈ ::VISUALIZER" {"-------":"null", "height is in px. width is a % max-width. the offset is a margin value.":"null", " '0 auto' centers, 'x x x x' allows for more precise positioning.":"null", "values are always declared clockwise: top, right, bottom & left margin.":"null", "e.g. '0 0 0 50px' is a 50px offset from the left.":"null", "declaring two values e.g. '10px 5px' sets top-bottom & left-right.":"null", "declaring three values e.g. '10px 5px 8px' sets top, left-right & bottom.":"null"}
+@var  checkbox  visualizerAlt         " └ Alt background color" 0
+@var  checkbox  horizontalVisualizer  " ↳ Horizontal" 0
+@var  number    visualizerHeight      "  ├ Height" [130, 0, 1000, 1, 'px']
+@var  number    visualizerWidth       "  ├ Width" [100, 0, 100, 1, '%']
+@var  text      visualizerOffset      "  └ Offset" 0 auto
+@var  select    PLAYERBAR             "⯈ ::PLAYER BAR" {"-------":"null", "if the seeker bar position differs from the original the playerbar changes height.":"null", "adjust the 'height' value as required.":"null", "the 'offset' value adds padding between the seeker bar & the rest off the player bar if required.":"null", "for the 'justify' rule to work you may need to use 'min-content' in the template.":"null"}
+@var  checkbox  topPlayerbar          " ├ Player bar on top" 0
+@var  checkbox  playerbarAlt          " ├ Alt background color" 1
+@var  checkbox  playerbarBorder       " ├ Border top" 1
+@var  text      playerbarHeight       " ├ Height" 90px
+@var  select    seekerPosition        " └ Seeker position" {"Original":"original", "Full width top":"topFW", "Full width top as divider":"topFWdiv", "Full width bottom":"bottomFW", "Full width bottom as divier":"bottomFWdiv"}
+@var  text      seekerOffset          "  └ Offset" 0px
+@var  checkbox  playerbarCompact      " └ Compact" 0
+@var  text      compactTemplate       "  ├ Template" auto auto 1fr
+@var  select      compactJustify      "  └ Justify" {"Left":"start", "Center":"center", "Right":"end", "Space around":"space-around", "Space between*":"space-between", "Space evenly":"space-evenly"}
+@var  select    playerbarTitle        " ↳ TITLE" {"-------":"null", "the image is always removed when the 'compact' rule is applied.":"null"}
+@var  checkbox  playerbarImage        "  ├ Player bar image" 1
+@var  text      orderPBTitle          "  └ Order" 1
+@var  select    playerbarControls     " ↳ CONTROLS" {"-------":"null", "add padding between the controls & song info.":"null", "-------":"null", "e.g. 0 0 0 25px":"null"}
+@var  text      orderPBControls       "  ├ Order" 2
+@var  text      paddingControls       "  ├ Padding" 0
+@var  checkbox  stopButton            "  ├ Stop" 1
+@var  checkbox  shuffleButton         "  ├ Shuffle" 1
+@var  checkbox  previousButton        "  ├ Previous" 1
+@var  checkbox  skipbButton           "  ├ Skip backwards" 1
+@var  checkbox  playpauseButton       "  ├ Play/Pause" 1
+@var  checkbox  skipfButton           "  ├ Skip forwards" 1
+@var  checkbox  nextButton            "  ├ Next" 1
+@var  checkbox  repeatButton          "  ├ Repeat" 1
+@var  checkbox  randomButton          "  └ Random" 1
+@var  select    playerbarButtons      " ↳ BUTTONS" {"-------":"null"}
+@var  text      orderPBButtons        "  ├ Order" 3
+@var  checkbox  autodjBtn             "  ├ AutoDJ" 1
+@var  checkbox  sleeptimerButton      "  ├ Sleep Timer" 1
+@var  checkbox  settingsButton        "  ├ Settings" 1
+@var  checkbox  lyricsButton          "  ├ Lyrics" 1
+@var  checkbox  favoriteButton        "  ├ Favorite" 1
+@var  checkbox  queueButton           "  ├ View queue" 1
+@var  checkbox  volumeButton          "  └ Volume" 1
+@var  checkbox  volumeSlider          "   └ Slider" 1
+@var  select    FILTERS               "⯈ ::FILTERS" {"-------":"null", "remove & order each filter individually.":"null", "the filters container can also be turned into a grid.":"null", "by default, it will display two columns of equal sizes.":"null", "tThe areas (fav, comp, art, genre, year, div1, div2, div3) may be modified.":"null"}
+@var  text      widthRoot             " ├ Width (breaks page if too wide)" 300px
+@var  text      paddingRoot           " ├ Padding" var(--mantine-spacing-md)
+@var  checkbox  displayGrid           " └ Grid" 0
+@var  text      gridTemplateAreas     "  ├ areas" ""fav   comp" "div1  div1" "year  year" "div2  div2" "genre art " "div3  div3""
+@var  text      gridTemplateColumns   "  ├ columns" "1fr 1fr"
+@var  text      gridTemplateRows      "  └ rows" "auto"
+@var  checkbox  filterFavorites       " ↳ FAVORITES" 1
+@var  number    orderFavorites        "  └ Order" [1, 1, 10, 1]
+@var  checkbox  filterCompilation     " ↳ COMPILATION" 1
+@var  number    orderCompilation      "  └ Order" [2, 0, 10, 1]
+@var  checkbox  filterArtists         " ↳ ARTISTS" 1
+@var  checkbox  imageArtists          "  ├ Images" 1
+@var  number    orderArtists          "  ├ Order" [4, 0, 10, 1]
+@var  text      heightArtists         "  └ Height" 300px
+@var  checkbox  filterGenres          " ↳ GENRES" 1
+@var  number    orderGenres           "  ├ Order" [6, 0, 10, 1]
+@var  text      heightGenres          "  └ Height" 220px
+@var  select    Artists-Genres        " ↳ ARTISTS & GENRES" {"-------":"null"}
+@var  checkbox  removebgArtists-Genres"  └ Remove background" 0
+@var  checkbox  filterYear            " ↳ YEAR" 1
+@var  number    orderYear             "  └ Order" [8, 0, 10, 1]
+@var  checkbox  filterDividers        " ↳ DIVIDERS" 1
+@var  checkbox  filterDivider--1      "  └ Divider 1" 1
+@var  number    orderDivider--1       "   └ Order" [3, 0, 10, 1]
+@var  checkbox  filterDivider--2      "  └ Divider 2" 1
+@var  number    orderDivider--2       "   └ Order" [5, 0, 10, 1]
+@var  checkbox  filterDivider--3      "  └ Divider 3" 1
+@var  number    orderDivider--3       "   └ Order" [7, 0, 10, 1]
+==/UserStyle== */
+@-moz-document domain("feishin.vercel.app") {
+  /* GENERAL */
+  .fs-sidebar-playlist-list-module-image-container {
+    display: none if playlistImage==0;
+  }
+
+  .fs-sidebar-playlist-list-module-controls {
+    padding: 0 if playlistImage==0;
+  }
+
+  #left-sidebar,
+  .fs-list-with-sidebar-container-module-sidebar-container {
+    padding-bottom: 20px if statusBar==1;
+  }
+
+  #main-content.fs-main-content-module-main-content-container {
+    background: var(--theme-colors-background-alternate);
+    #sidebar {
+      border: unset;
+    }
+
+    .fs-main-content-module-main-content-body {
+      border-radius: contentRadius contentRadius 0 0;
+      background: var(--theme-colors-background);
+    }
+  }
+
+  #sidebar-queue {
+    border: unset;
+  }
+
+  #default-layout {
+    --playerbarHeight: playerbarHeight;
+    --visualizerHeight: visualizerHeight;
+    grid-template-areas: "main-content""player";
+    grid-template-rows: calc(100vh - var(--playerbarHeight)) var(--playerbarHeight);
+    if topPlayerbar==1 {
+      grid-template-areas: "player""main-content";
+      grid-template-rows: var(--playerbarHeight) calc(100vh - var(--playerbarHeight));
+      &:has(div.fs-sidebar-play-queue-module-visualizer-section) {
+        grid-template-rows: calc(var(--visualizerHeight) + var(--playerbarHeight)) calc(100vh - calc(var(--visualizerHeight) + var(--playerbarHeight))) if horizontalVisualizer==1;
+      }
+    }
+  }
+}
+
+@-moz-document domain("feishin.vercel.app") {
+  /* VISUALIZER */
+  if horizontalVisualizer==1 {
+
+    div#main-content:has(div.fs-sidebar-play-queue-module-visualizer-section) {
+      /* apply styles if queue with visualizer is visible */
+      padding-top: visualizerHeight;
+      position: unset;
+      aside.fs-right-sidebar-module-right-sidebar-container {
+        position: unset !important;
+        div#sidebar-play-queue-container {
+          position: unset !important;
+          div.split-pane.vertical {
+            position: unset !important;
+            div.split-pane-pane:has(>div.fs-sidebar-play-queue-module-visualizer-section) {
+              position: absolute !important;
+              height: visualizerHeight !important;
+              left: 0;
+              top: 0;
+              .fs-visualizer-module-visualizer {
+                max-width: visualizerWidth;
+                margin: visualizerOffset;
+                canvas {
+                  padding-top: 10px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    #sidebar-queue > .fs-resize-handle-module-handle-left {
+      left: unset;
+    }
+  }
+
+
+  .fs-item-table-list-module-sticky-header {
+    --playerbarHeight: playerbarHeight;
+    --visualizerHeight: visualizerHeight;
+    top: calc(65px + var(--playerbarHeight)) !important if topPlayerbar==1;
+    top: calc(65px + var(--playerbarHeight) + var(--visualizerHeight)) !important if horizontalVisualizer==1;
+  }
+
+  .fs-playerbar-module-container {
+    border-top: none if playerbarBorder==0;
+  }
+
+  if visualizerAlt==1 {
+    @css {
+      :root[data-mantine-color-scheme="light"] {
+        .fs-sidebar-play-queue-module-visualizer-section {
+          background: color-mix(in srgb, var(--theme-colors-background), black 5%);
+          background-color: color-mix(in srgb, var(--theme-colors-background), black 5%);
+        }
+      }
+
+      :root[data-mantine-color-scheme="dark"] {
+        .fs-sidebar-play-queue-module-visualizer-section {
+          background: color-mix(in srgb, var(--theme-colors-background), black 10%);
+          background-color: color-mix(in srgb, var(--theme-colors-background), black 10%);
+        }
+      }
+    }
+  }
+}
+
+@-moz-document domain("feishin.vercel.app") {
+  /* PLAYER BAR */
+  if topPlayerbar==1 {
+    div#main-content:has(div.fs-sidebar-play-queue-module-visualizer-section) {
+      padding-top: 0;
+    }
+
+    :has(div.fs-sidebar-play-queue-module-visualizer-section) div#player-bar {
+      margin-top: visualizerHeight if horizontalVisualizer==1;
+      z-index: 0;
+    }
+  }
+
+  #player-bar .fs-playerbar-module-container {
+    --seekerOffset: seekerOffset;
+    position: relative;
+    if seekerPosition==topFW {
+      padding-top: calc(15px + var(--seekerOffset));
+      .fs-playerbar-slider-module-slider-container {
+        position: absolute;
+        width: 100%;
+        height: unset;
+        left: 0;
+        top: 4px;
+      }
+    }
+
+    if seekerPosition==topFWdiv {
+      padding-top: calc(5px + var(--seekerOffset));
+      .fs-playerbar-slider-module-slider-container {
+        width: fit-content;
+        height: fit-content;
+        & > :first-child {
+          position: absolute;
+          top: 18px;
+          right: 150px;
+          if autodjBtn==0 or playerbarCompact==1 {
+            top: 8px;
+            right: 70px;
+          }
+        }
+
+        & > :last-child {
+          position: absolute;
+          top: 18px;
+          right: 100px;
+          if autodjBtn==0 or playerbarCompact==1 {
+            top: 8px;
+            right: 10px;
+          }
+        }
+      }
+
+      .fs-playerbar-slider-module-slider-wrapper {
+        position: absolute;
+        width: 100%;
+        height: unset;
+        left: 0;
+        top: -3px;
+        & > div {
+          padding: 0;
+        }
+      }
+    }
+
+    if seekerPosition==bottomFW {
+      padding-bottom: calc(26px + var(--seekerOffset));
+      .fs-playerbar-slider-module-slider-container {
+        position: absolute;
+        width: 100%;
+        height: unset;
+        left: 0;
+        bottom: 11px;
+      }
+    }
+
+    if seekerPosition==bottomFWdiv {
+      padding-bottom: calc(5px + var(--seekerOffset));
+      .fs-playerbar-slider-module-slider-container {
+        width: fit-content;
+        height: fit-content;
+        & > :first-child {
+          position: absolute;
+          bottom: 8px;
+          right: 70px;
+          if autodjBtn==0 or playerbarCompact==1 {
+            bottom: 8px;
+            right: 70px;
+          }
+        }
+
+        & > :last-child {
+          position: absolute;
+          bottom: 10px;
+          right: 20px;
+          if autodjBtn==0 or playerbarCompact==1 {
+            bottom: 8px;
+            right: 10px;
+          }
+        }
+      }
+
+      .fs-playerbar-slider-module-slider-wrapper {
+        position: absolute;
+        width: 100%;
+        height: unset;
+        left: 0;
+        bottom: -4px;
+        & > div {
+          padding: 0;
+        }
+      }
+    }
+  }
+
+  .fs-playerbar-module-controls-grid {
+    height: unset if not seekerPosition==original;
+    .fs-playerbar-module-left-grid-item {
+      order: orderPBTitle;
+      .fs-left-controls-module-image-wrapper {
+        display: none if playerbarImage==0;
+      }
+    }
+
+    .fs-playerbar-module-center-grid-item {
+      order: orderPBControls;
+      padding: paddingControls;
+      gap: unset if not seekerPosition==original;
+      & .fs-center-controls-module-buttons-container:has(>button:nth-child(9)) {
+        &>button:nth-child(1) {
+          display: none if stopButton==0;
+        }
+
+        & > button:nth-child(2) {
+          display: none if shuffleButton==0;
+        }
+
+        & > button:nth-child(3) {
+          display: none if previousButton==0;
+        }
+
+        & > button:nth-child(4) {
+          display: none if skipbButton==0;
+        }
+
+        & > button:nth-child(5) {
+          display: none if playpauseButton==0;
+        }
+
+        & > button:nth-child(6) {
+          display: none if skipfButton==0;
+        }
+
+        & > button:nth-child(7) {
+          display: none if nextButton==0;
+        }
+
+        & > button:nth-child(8) {
+          display: none if repeatButton==0;
+        }
+
+        & > button:nth-child(9) {
+          display: none if randomButton==0;
+        }
+      }
+
+      & .fs-center-controls-module-buttons-container:not(:has(>button:nth-child(9))) {
+        & > button:nth-child(1) {
+          display: none if stopButton==0;
+        }
+
+        & > button:nth-child(2) {
+          display: none if shuffleButton==0;
+        }
+
+        & > button:nth-child(3) {
+          display: none if previousButton==0;
+        }
+
+        & > button:nth-child(4) {
+          display: none if playpauseButton==0;
+        }
+
+        & > button:nth-child(5) {
+          display: none if nextButton==0;
+        }
+
+        & > button:nth-child(6) {
+          display: none if repeatButton==0;
+        }
+
+        & > button:nth-child(7) {
+          display: none if randomButton==0;
+        }
+      }
+    }
+
+    .fs-playerbar-module-right-grid-item {
+      order: orderPBButtons;
+      overflow: unset;
+      & > div > div:first-child {
+        /* remove autoDJ */
+        display: none if autodjBtn==0;
+      }
+
+      & > div > .mantine-Group-root:nth-child(2) {
+        & > button:nth-child(1) {
+          display: none if sleeptimerButton==0;
+        }
+
+        & > button:nth-child(2) {
+          display: none if settingsButton==0;
+        }
+
+        & > button:nth-child(3) {
+          display: none if lyricsButton==0;
+        }
+
+        & > button:nth-child(4) {
+          display: none if favoriteButton==0;
+        }
+
+        & > button:nth-child(5) {
+          display: none if queueButton==0;
+        }
+
+        & > button:nth-child(6) {
+          display: none if volumeButton==0;
+          & ~ .fs-playerbar-slider-module-root {
+            display: none if volumeSlider==0;
+          }
+        }
+      }
+    }
+  }
+
+
+
+  if playerbarCompact==1 {
+
+    #player-bar {
+      height: var(--playerbarHeight);
+    }
+
+    .fs-playerbar-module-container.media-player {
+      height: unset;
+    }
+
+    .fs-playerbar-module-controls-grid {
+      padding: 0.5rem 0.75rem;
+      grid-template-columns: compactTemplate;
+      justify-content: compactJustify;
+      align-items: center;
+      .fs-playerbar-module-left-grid-item {
+        height: fit-content;
+        .fs-left-controls-module-image-wrapper {
+          display: none;
+        }
+
+        .fs-left-controls-module-left-controls-container {
+          padding-left: unset;
+        }
+
+        .fs-left-controls-module-metadata-stack {
+          align-items: center;
+          flex-direction: row;
+          height: 100%;
+          .fs-left-controls-module-line-item {
+            max-width: 60vw;
+            width: unset;
+            height: fit-content;
+            &.song-artist::before {
+              content: "by ";
+              display: inline;
+              opacity: .5;
+              color: var(--theme-colors-foreground-muted);
+              font-size: var(--text-fz, var(--mantine-font-size-md));
+              line-height: var(--text-lh, var(--mantine-line-height-md));
+              font-weight: 500;
+            }
+
+            &.song-album::before {
+              content: "on ";
+              display: inline;
+              opacity: .5;
+              color: var(--theme-colors-foreground-muted);
+              font-size: var(--text-fz, var(--mantine-font-size-md));
+              line-height: var(--text-lh, var(--mantine-line-height-md));
+              font-weight: 500;
+            }
+          }
+        }
+      }
+
+
+      .fs-playerbar-module-center-grid-item {
+        height: fit-content;
+        overflow: visible;
+      }
+
+      .fs-playerbar-module-right-grid-item {
+        height: fit-content;
+        justify-content: center;
+        & > div {
+          padding: unset !important;
+        }
+
+        & > div > div:first-child {
+          /* remove autoDJ */
+          display: none;
+        }
+
+        & > div > div:last-child {
+          display: none;
+        }
+      }
+    }
+  }
+
+  [data-mantine-color-scheme="dark"] .fs-player-bar-module-container {
+    background: var(--theme-colors-background-alternate) if playerbarAlt==1;
+  }
+
+  [data-mantine-color-scheme="light"] .fs-player-bar-module-container {
+    background: var(--theme-colors-background) if playerbarAlt==1;
+  }
+}
+
+
+@-moz-document domain("feishin.vercel.app") {
+  /* FILTERS */
+  .fs-list-with-sidebar-container-module-sidebar-container {
+    width: widthRoot;
+    min-width: widthRoot;
+    .mantine-Stack-root {
+      & > .fs-scroll-area-module-scroll-area > .mantine-Stack-root {
+        display: grid if displayGrid==1;
+        grid-template-columns: gridTemplateColumns;
+        grid-template-rows: gridTemplateRows;
+        grid-template-areas: gridTemplateAreas;
+        padding: paddingRoot !important;
+      }
+    }
+
+    .fs-select-module-root:first-child {
+      /* 'favorites' is always the rist child */
+      display: none if filterFavorites==0;
+      order: orderFavorites;
+      grid-area: fav;
+    }
+
+    .fs-select-module-root:not(:first-child):has(.mantine-ComboboxChevron-chevron) {
+      /* 'compilations' are displayed only when an artist is selected. it is the only filter with a chevron and is after the 'favorites' filter */
+      display: none if filterCompilation==0;
+      order: orderCompilation;
+      grid-area: comp;
+    }
+
+    .fs-virtual-multi-select-module-container {
+      /* artists & genres are the only filters with this class. removes both */
+      display: none if filterArtists==0;
+      order: orderArtists;
+      grid-area: art;
+      & ~ .fs-virtual-multi-select-module-container {
+        /* displays the sibling */
+        display: flex;
+      }
+
+      .fs-multi-select-rows-module-row-image {
+        /* remove images */
+        display: none if imageArtists==0;
+      }
+
+      .fs-virtual-multi-select-module-list-container {
+        height: heightArtists !important;
+        background: none if removebgArtists-Genres==1;
+        .fs-multi-select-rows-module-row {
+          &:hover {
+            background: var(--theme-colors-surface) if removebgArtists-Genres==1 !important;
+          }
+        }
+      }
+
+      .mantine-Stack-root:has(>.fs-virtual-multi-select-module-selected-option),
+      .mantine-Stack-root .fs-virtual-multi-select-module-selected-option {
+        --widthRoot: widthRoot;
+        --paddingRoot: paddingRoot;
+        @css {
+          & {
+            max-width: calc(calc(var(--widthRoot) / 2) - calc(var(--mantine-spacing-md) * 1.55))
+          }
+        }
+      }
+    }
+
+    .fs-virtual-multi-select-module-container ~ .fs-virtual-multi-select-module-container {
+      /* remove genre */
+      display: none if filterGenres==0;
+      order: orderGenres;
+      grid-area: genre;
+      .fs-virtual-multi-select-module-list-container {
+        height: heightGenres !important;
+      }
+    }
+
+    .mantine-Group-root:has(.mantine-NumberInput-control) {
+      /* year range is the only filter with a range number input */
+      display: none if filterYear==0;
+      order: orderYear;
+      grid-area: year;
+    }
+
+    .fs-divider-module-root {
+      display: none !important if filterDividers==0;
+      /* select & remove all dividers & overwrite all following rules if selected */
+      display: none if filterDivider--1==0;
+      order: orderDivider--1;
+      grid-area: div1;
+      /* select & remove all dividers */
+      & ~ .fs-divider-module-root {
+        /* select & reset other dividers after the first */
+        display: unset if filterDivider--1==0;
+      }
+    }
+
+    .fs-divider-module-root ~ .fs-divider-module-root {
+      /* select & remove all dividers after the first */
+      display: none if filterDivider--2==0;
+      order: orderDivider--2;
+      grid-area: div2;
+      & ~ .fs-divider-module-root {
+        /* select & reset other dividers after the second */
+        display: unset if filterDivider--2==0;
+      }
+    }
+
+    .fs-divider-module-root ~ .fs-divider-module-root ~ .fs-divider-module-root {
+      /* select & remove all dividers after the second */
+      display: none if filterDivider--3==0;
+      order: orderDivider--3;
+      grid-area: div3;
+      & ~ .fs-divider-module-root {
+        /* select & reset other dividers after the third */
+        display: unset if filterDivider--3==0;
+      }
+    }
+  }
+}
