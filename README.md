@@ -13,4 +13,7 @@ Initially made to emulate my musicbee setup.
 - Filters overhaul
 
 ## Screenshots
-![preview](/previews/preview.png)  
+![preview](/previews/preview.png)
+
+## Changelog
+- 15/03/2026 / [v0.0.2](https://github.com/924e50c0/FeishinUserCSS/commit/3d2bfabe892951992e9ab647b06a52585aa9eade) - Added right sidebar album cover
