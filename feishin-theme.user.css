@@ -1,15 +1,18 @@
 /* ==UserStyle==
 @name           Feishin Layout Tweaks
 @namespace      github.com/924e50c0/FeishinUserCSS
-@version        0.1.1
+@version        0.2.0
 @description    UserCSS for Feishin.
 @author         924e50c0
 
 @preprocessor   stylus
 
 @var  select    GENERAL               "⯈ ::GENERAL" {"click for more info.":"null", "Categories (eg. ::GENERAL) may have info displayed in the blank '-------' select menu.":"null"}
-@var  checkbox  playlistImage         "Sidebar playlist image" 1
-@var  checkbox  statusBar             "Status bar" 1
+@var  checkbox  themeSquare           "Square" 0
+@var  checkbox  radiusCoverPlay       " └ Apply to album cover buttons" 0
+@var  checkbox  radiusPlay            " └ Apply to play/pause buttons" 0
+@var  checkbox  radiusSlider          " └ Apply to playerbar sliders" 0
+@var  checkbox  libraryHeaderPadding  "Library header offset" 1
 @var  number    contentRadius         "Main page border radius" [0, 0, 100, 1, 'px']
 @var  text      mainRadiusLayout      " └ Radius layout" contentRadius contentRadius 0 0
 @var  select    VISUALIZER            "⯈ ::VISUALIZER" {"-------":"null", "height is in px. width is a % max-width. the offset is a margin value.":"null", " '0 auto' centers, 'x x x x' allows for more precise positioning.":"null", "values are always declared clockwise: top, right, bottom & left margin.":"null", "e.g. '0 0 0 50px' is a 50px offset from the left.":"null", "declaring two values e.g. '10px 5px' sets top-bottom & left-right.":"null", "declaring three values e.g. '10px 5px 8px' sets top, left-right & bottom.":"null"}
@@ -92,20 +95,41 @@
 @var  select    paddingCoverLayout    "  └ Layout" {"Stay on top":"top", "Center":"center"}
 @var  text      coverRadiusLayout     " ↳ Radius layout" 0 0 0 0
 @var  checkbox  collapseButton        " ↳ Remove collapse button" 0
+@var  select    RIGHTSIDEBAR          "⯈ ::RIGHT SIDEBAR" {"-------":"null"}
+@var  checkbox  playlistImage         " └ Sidebar playlist image" 1
+@var  checkbox  NAVBAR                " ↳ Global search" 0
+@var  text      navRadius             "  ├ Border radius" 0.1875rem 0.1875rem 0.1875rem 0.1875rem
+@var  number    navGap                "  ├ Gap" [0.5, 0, 1, 0.25, 'rem']
+@var  checkbox  navTop                "  ├ Align top" 0
+@var  checkbox  navPadding            "  ├ Padding" 1
+@var  checkbox  navBG                 "  └ Background" 1
 ==/UserStyle== */
 @-moz-document domain("feishin.vercel.app") {
   /* GENERAL */
-  .fs-sidebar-playlist-list-module-image-container {
-    display: none if playlistImage==0;
+  :root {
+    --radiusMultiplier: radiusMultiplier;
+    --mantine-radius-default: calc(0.1875rem * var(--radiusMultiplier)) if themeSquare==1;
+    --theme-radius-md: calc(0.3125rem * var(--radiusMultiplier)) if themeSquare==1;
+    --mantine-radius-xl: calc(1rem * var(--radiusMultiplier)) if themeSquare==1 && radiusSlider==1;
+    --skeleton-border-radius: calc(.25rem * var(--radiusMultiplier))if themeSquare==1;
   }
 
-  .fs-sidebar-playlist-list-module-controls {
-    padding: 0 if playlistImage==0;
+  .fs-play-button-module-play-button {
+    border-radius: calc(100% * var(--radiusMultiplier)) if themeSquare==1 && radiusCoverPlay==1;
   }
 
-  #left-sidebar,
-  .fs-list-with-sidebar-container-module-sidebar-container {
-    padding-bottom: 20px if statusBar==1;
+  .fs-player-button-module-main,
+  .fs-play-button-module-text-button {
+    border-radius: calc(50% * var(--radiusMultiplier)) if themeSquare==1 && radiusPlay==1;
+  }
+
+  .fs-library-header-bar-module-header-container {
+    padding: 0 0.25rem if libraryHeaderPadding==0;
+  }
+
+  .mantine-Flex-root:has(>.fs-library-header-bar-module-header-container) {
+    /* settings tab header title padding */
+    padding: var(--theme-spacing-sm);
   }
 
   #main-content.fs-main-content-module-main-content-container {
@@ -728,6 +752,51 @@
         --offset: calc(var(--padding) * 1) if paddingCoverLayout==center;
         overflow: auto;
         padding-top: calc(var(--right-sidebar-width) - var(--offset));
+      }
+    }
+  }
+}
+
+@-moz-document domain("feishin.vercel.app") {
+  /* RIGHT SIDEBAR */
+  .fs-sidebar-playlist-list-module-image-container {
+    display: none if playlistImage==0;
+  }
+
+  .fs-sidebar-playlist-list-module-controls {
+    padding: 0 if playlistImage==0;
+  }
+
+  if NAVBAR==1 {
+    #global-search-container > .fs-action-bar-module-container {
+      align-items: start if navTop==1;
+      height: fit-content if navTop==1;
+      padding-bottom: var(--mantine-spacing-md) if navTop==1;
+      & > .m_410352e9 {
+        padding: 0 !important if navPadding==0;
+        --grid-gutter: navGap;
+        & > div {
+          .mantine-Grid-col:has(~div) > div {
+            /* search bar */
+            input {
+              border-radius: navRadius;
+              border-radius: 0 if themeSquare==1;
+              background: none if navBG==0;
+            }
+          }
+
+          .mantine-Grid-col:not(:has(~div)) > div {
+            /* buttons */
+            gap: navGap;
+            button {
+              border-radius: navRadius;
+              border-radius: 0 if themeSquare==1;
+              &:not(:hover) {
+                background: none if navBG==0;
+              }
+            }
+          }
+        }
       }
     }
   }
